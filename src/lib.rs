@@ -10,17 +10,25 @@ use gargoyle::{Action, Monitor};
 ///  ```
 ///  # use std::time::Duration;
 ///  # use std::thread::sleep;
-///  use gargoyle::{modules::{monitor, notify}, Schedule};
+///  # use gargoyle::Notify;
+///  # struct Sink;
+///  # impl Notify for Sink {
+///  #    fn send(&self, _msg: &str, _diagnostic: Option<String>) -> Result<(), String> {
+///  #        Ok(())
+///  #    }
+///  # }
+///  use gargoyle::Schedule;
+///  use gargoyle_web_monitor::WebAvailability;
 ///  let url = "http://example.com";
-///  let web_monitor = monitor::WebAvailability::with_user_agent(url, "Gargoyle/0.1 my_contact_info@example.com");
-///  let stdout_notifier = notify::Stdout;
+///  let web_monitor = WebAvailability::with_user_agent(url, "Gargoyle/0.1 my_contact_info@example.com").unwrap();
+///  let sink_notifier = Sink;
 ///  let mut schedule = Schedule::default();
 ///  schedule.add(
 ///      &format!("The Gargoyle has detected that {url} has gone down"),
 ///      &format!("The Gargoyle has detected that {url} has recovered"),
 ///      Duration::from_secs(60),
 ///      &web_monitor,
-///      &stdout_notifier,
+///      &sink_notifier,
 /// );
 ///
 /// loop {
